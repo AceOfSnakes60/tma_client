@@ -4,9 +4,10 @@ import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
 import { Container, MenuList } from "@mui/material";
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 function ItemList() {
-  const [items, setItems] = useState(null);
+  const [items, setItems] = useState();
   const [selected, setSelected] = useState();
   useEffect(() => {
     axios.get('http://localhost:8080/lists/items')
@@ -40,11 +41,26 @@ function ItemList() {
   ];
 
   const onRemove = () => {
+    console.log(selected)
+    selected.forEach(element => {
+      axios.delete(`http://localhost:8080/lists/items/${element}`)
+      .then(response=>{
+        console.log("Item deleted: ", response.data)
+        setSelected(prevSelected => prevSelected.filter(item => item !== element));
+        window.location.reload();
+        
+      })
+      .catch(error=>{console.error("Error deleting item: ", error)})
+    })
+    
+    //window.location.reload();
 
   }
 
-  const onSelection = () => {
-
+  const onSelection = (ids) => {
+      setSelected(ids);
+      console.log(selected);
+      
   }
 
 
@@ -69,6 +85,7 @@ function ItemList() {
           </div>
 
         ) : <div>Not available.</div>}
+        {selected&&<Button vaiant="outlined" onClick={onRemove}>Delete Selected</Button>}
       </Container>
     </div>
 

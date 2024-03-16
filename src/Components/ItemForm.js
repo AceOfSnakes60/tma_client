@@ -7,45 +7,51 @@ import { Container, MenuList } from "@mui/material";
 import MenuItem from '@mui/material/MenuItem';
 import axios from "axios";
 
-const itemGroupsSelect = [
-    { value: '', label: 'Select Item Group' },
-    { value: 'A', label: 'A' },
-    { value: 'B', label: 'B' },
-    { value: 'C', label: 'C' },
-    { value: 'D', label: 'D' }
-];
 
-const unitOfMeasurementSwitch = [
-    { value: '', label: 'Select Unit of Measurement' },
-    { value: 'Number', label: 'Number' },
-    { value: 'Meter', label: 'Meter' },
-    { value: 'Litre', label: 'Litre' },
-    { value: 'Kilograms', label: 'Kilograms' }
-];
 
 function ItemForm() {
-    const [input, setInput] = useState(
-        {
-            itemGroup: '',
+    const itemGroupsSelect = [
+        {value: 0, label: "A" },
+        {value: 1, label: "B" },
+        {value: 2, label: "C" },
+        {value: 3, label: "D" } 
+    ];
+    
+    const unitOfMeasurementSwitch = [
+        { value: 0, label: 'Number' },
+        { value: 1, label: 'Meter' },
+        { value: 2, label: 'Litre' },
+        { value: 3, label: 'Kilograms' }
+    ];
+    const [input, setInput] = useState('')
+        /*{
+            itemGroup: "A",
             unitOfMeasurement: '',
             quantity: '',
             priceUAH: '',
             status: '',
             storageLocation: '',
             contactPerson: ''
-        });
+        });*/
+
 
     const handleChange = (e)=>{
-        const {name, value} = e.target;
+        //const {name, value} = e.target;
+        console.log(e)
         setInput(prevState=>({
             ...prevState,
-            [name] : value
+            [e.target.name] : e.target.value
         }));
+        console.log(input)
+        
     }
 
+
     const submit = ()=>{
+        console.log(input)
         axios.post("http://localhost:8080/lists/items", input)
-        .then(response=>{console.log("Item posted: ", response.data)})
+        .then(response=>{console.log("Item posted: ", response.data)
+            window.location.reload();})
         .catch(error=>{console.error("Error posting item: ", error)})
     }
 
@@ -71,9 +77,11 @@ function ItemForm() {
                     value={input.itemGroup}
                     onChange={e=>handleChange(e)}
                     variant="standard" >
-                        <MenuList>
-                        {itemGroupsSelect.map((option)=>(<MenuItem value={option.value}>{option.label}</MenuItem>))}
-                        </MenuList>
+                        
+                        {itemGroupsSelect.map((option)=>(
+                        <MenuItem value={option.value} >{option.label}</MenuItem>
+                        ))}
+                        
                     </TextField>
                 <TextField required
                     id="standard-required"
@@ -81,40 +89,46 @@ function ItemForm() {
                     label="Unit of Measurement"
 
                     select
-                    value={input.unitOfMeasurement}
+                    defaultValue={unitOfMeasurementSwitch[0].value}
                     onChange={e=>handleChange(e)}
                     variant="standard" >
-                        <MenuList>
-                        {unitOfMeasurementSwitch.map((option)=>(<MenuItem value={option.value} >{option.label}</MenuItem>))}
-                        </MenuList>
+                        
+                        {unitOfMeasurementSwitch.map((option)=>(
+                        <MenuItem value={option.value} >{option.label}</MenuItem>
+                        ))}
+                        
                     </TextField>
                 <TextField required
                     id="standard-required"
-                    key="quantity"
+                    name="quantity"
                     label="Quantity"
-                    defaultValue=""
+                    onChange={e=>handleChange(e)}
+                    value={input.quantity}
                     variant="standard" />
                 <TextField required
                     id="standard-required"
-                    key="priceUAH"
+                    name="priceUAH"
                     label="Price UAH"
-                    defaultValue=""
+                    onChange={e=>handleChange(e)}
+                    value={input.priceUAH}
                     variant="standard" />
                 <TextField required
                     id="standard"
-                    key="status"
+                    name="status"
                     label="Status"
+                    onChange={e=>handleChange(e)}
                     defaultValue=""
                     variant="standard" />
                 <TextField 
                     id="standard"
-                    key="storageLocation"
+                    name="storageLocation"
                     label="Storage Location"
-                    defaultValue=""
+                    value={input.storageLocation}
+                    onChange={e=>handleChange(e)}
                     variant="standard" />
                 <TextField
                     id="standard"
-                    key="contactPerson"
+                    name="contactPerson"
                     label="Contact Person"
                     defaultValue=""
                     variant="standard" />
