@@ -20,6 +20,25 @@ function ItemList() {
       });
   }, [])
 
+  if (selected && selected.length === 0) {
+    setSelected('')
+  }
+  const updateButton = () => {
+    return (
+      <button>U</button>
+    )
+  }
+  const deleteButton = () => {
+    return (
+      <button>D</button>
+    )
+  }
+  const orderButton = () => {
+    return (
+      <button>O</button>
+    )
+  }
+
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'itemGroup', headerName: 'Item Group', width: 70 },
@@ -38,29 +57,53 @@ function ItemList() {
     { field: 'status', headerName: 'Status', width: 130 },
     { field: 'storageLocation', headerName: 'Storage Location', width: 130 },
     { field: 'contactPerson', headerName: 'Contact Person', width: 130 },
+    {
+      field: 'update',
+      sortable: false,
+      width: 20,
+      renderCell: updateButton,
+      disableClickEventBubbling: true
+    },
+    {
+      field: 'delete',
+      headerName: 'Delete',
+      sortable: false,
+      width: 20,
+      renderCell: deleteButton,
+      disableClickEventBubbling: true
+    },
+    {
+      field: 'order',
+      headerName: 'Order',
+      sortable: false,
+      width: 20,
+      renderCell: orderButton,
+      disableClickEventBubbling: true
+    },
   ];
 
   const onRemove = () => {
-    console.log(selected)
+
     selected.forEach(element => {
       axios.delete(`http://localhost:8080/lists/items/${element}`)
-      .then(response=>{
-        console.log("Item deleted: ", response.data)
-        setSelected(prevSelected => prevSelected.filter(item => item !== element));
-        window.location.reload();
-        
-      })
-      .catch(error=>{console.error("Error deleting item: ", error)})
+        .then(response => {
+          console.log("Item deleted: ", response.data)
+          setSelected(prevSelected => prevSelected.filter(item => item !== element));
+          window.location.reload();
+
+        })
+        .catch(error => { console.error("Error deleting item: ", error) })
     })
-    
+
     //window.location.reload();
 
   }
 
+
   const onSelection = (ids) => {
-      setSelected(ids);
-      console.log(selected);
-      
+    setSelected(ids);
+    console.log(selected);
+
   }
 
 
@@ -80,12 +123,14 @@ function ItemList() {
               }}
               pageSizeOptions={[5, 10]}
               checkboxSelection
+              button
               onRowSelectionModelChange={(itm) => { onSelection(itm) }}
             />
           </div>
 
         ) : <div>Not available.</div>}
-        {selected&&<Button vaiant="outlined" onClick={onRemove}>Delete Selected</Button>}
+        <Button variant="outlined">Add Item</Button>
+        {selected && <Button variant="outlined" onClick={onRemove}>Delete Selected</Button>}
       </Container>
     </div>
 
@@ -93,18 +138,3 @@ function ItemList() {
 }
 
 export default ItemList;
-
-/*
-<ul>{items.map(item=>(
-    <li key={item.Id} className="list-item">
-        {item.itemGroup && <div className="column">{item.itemGroup}</div>}
-        {item.unitOfMeasurement && <div className="column">{item.unitOfMeasurement}</div>}
-        {item.quantity && <div className="column">{item.quantity}</div>}
-        {item.priceUAH && <div className="column">{item.priceUAH}</div>}
-        {item.status && <div className="column">{item.status}</div>}
-        {item.storageLocation && <div className="column">{item.storageLocation}</div>}
-        {item.contactPerson && <div className="column">{item.contactPerson}</div>}
-    </li>
-))}
-</ul>
-*/
