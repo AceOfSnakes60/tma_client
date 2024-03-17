@@ -4,6 +4,7 @@ import axios from 'axios';
 function OrderList(){
 
     const [orders, setOrders] = useState(null);
+    
     useEffect(()=>{
         axios.get('http://localhost:8080/lists/orders')
         .then(response=>{setOrders(response.data)
@@ -28,7 +29,7 @@ function OrderList(){
             </li>
         ))}
         </ul>
-        ):<div>Not available.</div>}
+        ):<div>Order List Not available.</div>}
     </div>
     )
 }

@@ -5,27 +5,34 @@ import Button from '@mui/material/Button';
 import { FormControl} from "@mui/base";
 import { Container, MenuList } from "@mui/material";
 import MenuItem from '@mui/material/MenuItem';
+import axios from "axios";
 
-const unitOfMeasurementSwitch = [
-    {
-        value: 0,
-        label: "Number"
-    },
-    {
-        value: 1,
-        label: "Meter"
-    },
-    {
-        value: 2,
-        label: "Litre"
-    },
-    {
-        value: 3,
-        label: "Kilograms"
+
+
+function OrderForm(props){
+
+    const unitOfMeasurementSwitch = props.unitOfMeasurementSelect;
+
+    const [input, setInput] = useState({itemId: props.itemId})
+
+    const handleChange = (e)=>{
+        console.log(e)
+        setInput(prevState=>({
+            ...prevState,
+            [e.target.name] : e.target.value
+        }));
+        console.log(input)
+        
     }
-]
 
-function OrderForm(){
+    const onSubmit = ()=>{
+        console.log(input)
+        axios.post("http://localhost:8080/lists/orders", input)
+        .then(response=>{console.log("Item posted: ", response.data)
+            window.location.reload();})
+        .catch(error=>{console.error("Error posting item: ", error)})
+    }
+
     return(
         <div>
             <Container>
@@ -41,40 +48,49 @@ function OrderForm(){
             <div>
             <TextField required
                     id="standard-required"
+                    name="employeeName"
                     label="Employee Name"
-                    defaultValue=""
+                    value={input.employeeName}
+                    onChange={e=>handleChange(e)}
                     variant="standard" />
                 <TextField required
                     id="standard-required"
+                    name="unitOfMeasurement"
                     label="Unit of Measurement"
-                    defaultValue=""
+                    value={input.unitOfMeasurement}
+                    onChange={e=>handleChange(e)}
                     select
                     variant="standard" >
-                                                <MenuList>
-                        {unitOfMeasurementSwitch.map((option)=>(<MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>))}
-                        </MenuList>
+                                                
+                        {unitOfMeasurementSwitch.map((option)=>(<MenuItem value={option.value} >{option.label}</MenuItem>))}
+                        
                     </TextField>
                 <TextField required
                     id="standard-required"
                     label="Quantity"
-                    defaultValue=""
+                    name="quantity"
+                    value={input.quantity}
                     variant="standard" />
                 <TextField required
                     id="standard-required"
                     label="Price UAH"
-                    defaultValue=""
+                    name="priceUAH"
+                    value={input.priceUAH}
+                    onChange={e=>handleChange(e)}
                     variant="standard" />
                 <TextField required
                     id="standard"
                     label="Comment"
-                    defaultValue=""
+                    name="comment"
+                    value={input.comment}
+                    onChange={e=>handleChange(e)}
                     variant="standard" />
                 
             </div>
            
         </Box>
         <h4>* Required</h4>
-         <Button variant="outlined">Submit</Button>
+         <Button variant="outlined" onClick={onSubmit}>Submit</Button>
          
          </Container></div>
 
