@@ -9,30 +9,12 @@ import axios from "axios";
 
 
 
-function ItemForm() {
-    const itemGroupsSelect = [
-        {value: 0, label: "A" },
-        {value: 1, label: "B" },
-        {value: 2, label: "C" },
-        {value: 3, label: "D" } 
-    ];
-    
-    const unitOfMeasurementSwitch = [
-        { value: 0, label: 'Number' },
-        { value: 1, label: 'Meter' },
-        { value: 2, label: 'Litre' },
-        { value: 3, label: 'Kilograms' }
-    ];
+function ItemForm(props) {
+
+    const itemGroupsSelect = props.itemGroupsSelect;
+
+    const unitOfMeasurementSwitch = props.unitOfMeasurementSelect;
     const [input, setInput] = useState('')
-        /*{
-            itemGroup: "A",
-            unitOfMeasurement: '',
-            quantity: '',
-            priceUAH: '',
-            status: '',
-            storageLocation: '',
-            contactPerson: ''
-        });*/
 
 
     const handleChange = (e)=>{
@@ -89,7 +71,7 @@ function ItemForm() {
                     label="Unit of Measurement"
 
                     select
-                    defaultValue={unitOfMeasurementSwitch[0].value}
+                    value={input.unitOfMeasurement}
                     onChange={e=>handleChange(e)}
                     variant="standard" >
                         
